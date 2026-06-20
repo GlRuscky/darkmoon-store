@@ -1,7 +1,5 @@
 <?php
-/**
- * ==================== ARRAY DE CUPONS ====================
- */
+/* ==================== ARRAY DE CUPONS ==================== */
 $cupons = [
     'DARK10'      => 10,
     'MOON15'      => 15,
@@ -9,9 +7,7 @@ $cupons = [
     'BLACKFRIDAY' => 30,
 ];
 
-/**
- * ==================== VALIDAR CUPOM ====================
- */
+/* ==================== VALIDAR CUPOM ==================== */
 function validarCupom($cupons, $codigo) {
     $codigo = strtoupper(trim($codigo));
 
@@ -22,9 +18,7 @@ function validarCupom($cupons, $codigo) {
     return array_key_exists($codigo, $cupons) ? $cupons[$codigo] : false;
 }
 
-/**
- * ==================== APLICAR DESCONTO ====================
- */
+/* ==================== APLICAR DESCONTO ==================== */
 function aplicarDesconto($preco, $percentual) {
     if ($preco <= 0 || $percentual < 0 || $percentual > 100) {
         return $preco;
@@ -33,9 +27,8 @@ function aplicarDesconto($preco, $percentual) {
     return round($preco - ($preco * ($percentual / 100)), 2);
 }
 
-/**
- * ==================== FILTRAR PRODUTOS POR FAIXA DE PREÇO ====================
- */
+/* ==================== FILTRAR PRODUTOS POR FAIXA DE PREÇO ==================== */
+
 function filtrarPorFaixaPreco($produtos, $min, $max) {
     $resultado = [];
 
@@ -48,9 +41,9 @@ function filtrarPorFaixaPreco($produtos, $min, $max) {
     return $resultado;
 }
 
-/**
- * ==================== EXIBIR CARD DE PRODUTO ====================
- */
+
+  /* ==================== EXIBIR CARD DE PRODUTO ==================== */
+ 
 function exibirProdutoCard($produto) {
     $imagem = !empty($produto['imagem']) ? 'images/' . trim($produto['imagem']) : 'images/sem-imagem.jpg';
 

@@ -9,11 +9,14 @@ include 'funcoes.php';
     <h1 class="text-center display-5 mb-4">Nossos Produtos</h1>
 
     <?php
+    // Lê os filtros enviados via URL (?busca=...&categoria=...&preco_min=...&preco_max=...)
     $busca     = $_GET['busca']     ?? '';
     $categoria = $_GET['categoria'] ?? '';
     $precoMin  = $_GET['preco_min'] ?? '';
     $precoMax  = $_GET['preco_max'] ?? '';
 
+    // Mapa nome (URL) -> id_categoria no banco
+    // Usar ID evita problemas de encoding com caracteres acentuados
     $categoriasMap = [
         'Camisas'    => 1,
         'Vestidos'   => 2,
@@ -21,24 +24,27 @@ include 'funcoes.php';
         'Acessorios' => 4,
     ];
 
+    // Query base com JOIN para permitir filtro por categoria
     $sql = "SELECT DISTINCT p.* FROM produtos p
             LEFT JOIN produto_categoria pc ON p.id_produto = pc.id_produto
             WHERE 1=1";
 
+    // Filtro de busca por nome ou descrição (LIKE)
     if (!empty($busca)) {
         $buscaEscaped = $conn->real_escape_string($busca);
         $sql .= " AND (p.nome LIKE '%$buscaEscaped%' OR p.descricao LIKE '%$buscaEscaped%')";
     }
 
+    // Filtro de categoria usando id numérico
     if (!empty($categoria) && isset($categoriasMap[$categoria])) {
         $idCategoria = $categoriasMap[$categoria];
         $sql .= " AND pc.id_categoria = $idCategoria";
     }
 
+    // Filtro de faixa de preço
     if (is_numeric($precoMin)) {
         $sql .= " AND p.preco >= " . floatval($precoMin);
     }
-
     if (is_numeric($precoMax)) {
         $sql .= " AND p.preco <= " . floatval($precoMax);
     }
@@ -49,7 +55,7 @@ include 'funcoes.php';
     $totalProdutos = $result->num_rows;
     ?>
 
-    <!-- Filtro por categoria -->
+    <!-- Botões de filtro por categoria -->
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
         <a href="produtos.php" class="btn btn-outline-light <?= empty($categoria) ? 'active' : '' ?>">Todos</a>
         <a href="produtos.php?categoria=Camisas"    class="btn btn-outline-light <?= $categoria === 'Camisas'    ? 'active' : '' ?>">Camisas</a>
@@ -58,7 +64,7 @@ include 'funcoes.php';
         <a href="produtos.php?categoria=Acessorios" class="btn btn-outline-light <?= $categoria === 'Acessorios' ? 'active' : '' ?>">Acessórios</a>
     </div>
 
-    <!-- Filtro por faixa de preço -->
+    <!-- Filtro de faixa de preço via formulário GET -->
     <form method="GET" action="produtos.php" class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-4">
         <?php if (!empty($busca)): ?>
             <input type="hidden" name="busca" value="<?= htmlspecialchars($busca) ?>">
@@ -84,7 +90,7 @@ include 'funcoes.php';
         <?php endif; ?>
     </form>
 
-    <!-- Indicador de busca ativa -->
+    <!-- Exibe quantos produtos foram encontrados na busca -->
     <?php if (!empty($busca)): ?>
         <p class="text-center text-secondary mb-4">
             Resultados para "<strong><?= htmlspecialchars($busca) ?></strong>" 

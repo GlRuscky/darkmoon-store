@@ -12,16 +12,19 @@ include 'funcoes.php';
     </div>
 
     <?php
-    $cupomDigitado    = $_GET['cupom']     ?? '';
+    // Lê o cupom digitado e valida usando a função validarCupom() de funcoes.php
+    $cupomDigitado    = $_GET['cupom'] ?? '';
     $descontoAplicado = false;
 
     if (!empty($cupomDigitado)) {
         $descontoAplicado = validarCupom($cupons, $cupomDigitado);
     }
 
+    // Lê a faixa de preço
     $precoMin = $_GET['preco_min'] ?? '';
     $precoMax = $_GET['preco_max'] ?? '';
 
+    // Busca todos os produtos do banco e armazena em array PHP
     $sql = "SELECT * FROM produtos";
     $result = $conn->query($sql);
 
@@ -30,10 +33,12 @@ include 'funcoes.php';
         $produtos[] = $row;
     }
 
+    // Filtra por faixa de preço em memória usando filtrarPorFaixaPreco() de funcoes.php
     if (is_numeric($precoMin) && is_numeric($precoMax)) {
         $produtos = filtrarPorFaixaPreco($produtos, (float) $precoMin, (float) $precoMax);
     }
 
+    // Embaralha e limita a 8 produtos para exibição
     shuffle($produtos);
     $produtos = array_slice($produtos, 0, 8);
     ?>
@@ -58,7 +63,7 @@ include 'funcoes.php';
         <button type="submit" class="btn btn-outline-light">Filtrar</button>
     </form>
 
-    <!-- Feedback do cupom -->
+    <!-- Feedback visual do cupom -->
     <?php if (!empty($cupomDigitado)): ?>
         <?php if ($descontoAplicado !== false): ?>
             <p class="text-center text-success mb-5">
@@ -79,7 +84,8 @@ include 'funcoes.php';
         <?php foreach ($produtos as $produto): ?>
             <?php
             $precoOriginal = $produto['preco'];
-            $precoFinal    = $descontoAplicado !== false
+            // Aplica o desconto usando aplicarDesconto() de funcoes.php
+            $precoFinal = $descontoAplicado !== false
                 ? aplicarDesconto($precoOriginal, $descontoAplicado)
                 : $precoOriginal;
             ?>
