@@ -1,0 +1,127 @@
+/* ==================== FONTES ==================== */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+}
+
+h1, h2, h3, .navbar-brand, .card-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* ==================== CARDS - LUZ VERMELHA NA BORDA ==================== */
+.card {
+    background-color: #181818;
+    border: 2px solid #3a3a3a;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Efeito principal: borda com brilho vermelho */
+.card:hover {
+    border-color: #ff1744;
+    box-shadow: 
+        0 0 15px #b71c1c,
+        0 0 30px #ff1744,
+        0 0 45px rgba(255, 23, 68, 0.5);
+    transform: translateY(-12px);
+}
+
+/* Imagem com zoom suave */
+.card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.08);
+}
+
+/* Interior do card */
+.card-body {
+    background-color: #181818;
+}
+
+/* Texto */
+.card-title {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.card-text {
+    color: #bbbbbb;
+}
+
+/* Preço com destaque */
+h4.text-danger {
+    color: #fc2b55 !important;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-shadow: 0 0 8px #ff1744;
+}
+
+/* Botão */
+.btn-outline-light {
+    border-color: #666;
+    color: #eee;
+}
+
+.btn-outline-light:hover {
+    background-color: #b71c1c;
+    border-color: #ff1744;
+    color: white;
+}
+
+/* Título de Seções - Cor Vinho */
+h2.display-6, 
+h2.text-danger,
+#destaque-titulo {
+    color: #b71c1c !important;           /* Vinho forte */
+    text-shadow: 0 0 10px rgba(183, 28, 28, 0.6);
+}
+
+/* Linha embaixo do título */
+h2.display-6:after,
+h2.text-danger:after {
+    content: '';
+    position: relative;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 4px;
+    background: linear-gradient(to right, #b71c1c, #ff1744);
+}
+
+.navbar-nav .nav-link {
+    color: #e0e0e0;
+    transition: color 0.3s ease, text-shadow 0.3s ease; 
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #ff1744 !important;
+    text-shadow: 0 0 8px rgba(255, 23, 68, 0.6);
+}
+
+.navbar-nav .nav-link.active {
+    color: #fc2b55 !important;
+}
+
+footer a {
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+footer ul li a:hover {
+    color: #ff1744 !important;
+    text-shadow: 0 0 8px rgba(255, 23, 38, 0.6);
+}
+
+footer .d-flex a:hover {
+    color: #ff1744 !important;
+    text-shadow: 0 0 10px rgba(255, 23, 68, 0.7);
+    transform: scale(1.15);
+    display: inline-block;
+}
