@@ -1,21 +1,19 @@
 <?php
 /* ==================== ARRAY DE CUPONS ==================== */
-$cupons = [
-    'DARK10'      => 10,
-    'MOON15'      => 15,
-    'GOTICA20'    => 20,
-    'BLACKFRIDAY' => 30,
-];
-
-/* ==================== VALIDAR CUPOM ==================== */
-function validarCupom($cupons, $codigo) {
+function validarCupom($conn, $codigo) {
     $codigo = strtoupper(trim($codigo));
 
     if (empty($codigo)) {
         return false;
     }
+    
+    $stmt = $conn->prepare("SELECT percentual_desconto FROM cupons WHERE codigo = ? AND ativo = 1");
+    $stmt->bind_param("s", $codigo);
+    $stmt->execute();
+    $resultado = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-    return array_key_exists($codigo, $cupons) ? $cupons[$codigo] : false;
+    return $resultado ? (float) $resultado['percentual_desconto'] : false;
 }
 
 /* ==================== APLICAR DESCONTO ==================== */

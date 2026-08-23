@@ -1,8 +1,8 @@
 <?php
-$host = "sql111.ezyro.com";
-$user = "ezyro_42231701";
-$pass = "senha123";
-$db   = "ezyro_42231701_loja_gotica";
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "loja_gotica";
 
 $conn = new mysqli($host, $user, $pass, $db);
 

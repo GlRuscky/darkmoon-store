@@ -17,7 +17,7 @@ include 'funcoes.php';
     $descontoAplicado = false;
 
     if (!empty($cupomDigitado)) {
-        $descontoAplicado = validarCupom($cupons, $cupomDigitado);
+        $descontoAplicado = validarCupom($conn, $cupomDigitado);
     }
 
     // Lê a faixa de preço

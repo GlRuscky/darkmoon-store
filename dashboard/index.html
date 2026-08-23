@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DarkMoon Store</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+
+        <header>
+            <h1>Dashboard — DarkMoon Store</h1>
+            <p>Integração entre API PHP (PDO) e TypeScript</p>
+        </header>
+
+        <div class="cards-grid">
+
+
+            <div class="card">
+                <div class="card-label">Faturamento Total</div>
+                <div id="card-faturamento" class="card-value">Carregando...</div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-label">Produto Mais Vendido</div>
+                <div id="card-produto-destaque" class="card-value">Carregando...</div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-label">Estoque Crítico</div>
+                <div id="card-estoque-critico" class="card-value">Carregando...</div>
+            </div>
+
+        </div>
+
+
+        <div class="estoque-critico-container">
+            <h2 class="tabela-titulo">Produtos com estoque crítico (menos de 5 un.)</h2>
+            <div id="lista-estoque-critico">Carregando...</div>
+        </div>
+
+        <div class="tabela-container">
+            <h2 class="tabela-titulo">Lista de Produtos</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Vendidos</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-produtos-body">
+                    <tr><td colspan="6">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="dist/app.js"></script>
+
+</body>
+</html>
