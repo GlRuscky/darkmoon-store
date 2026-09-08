@@ -64,6 +64,17 @@ $paginaAtual = basename($_SERVER['PHP_SELF']);
         <i class="bi bi-info-circle"></i> Sobre Nós
     </a>
 </li>
+<li class="nav-item dropdown">
+    <?php $paginasAdmin = ['admin_produtos.php', 'admin_cupons.php', 'admin_usuarios.php']; ?>
+    <a class="nav-link dropdown-toggle <?= in_array($paginaAtual, $paginasAdmin) ? 'active' : '' ?>" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-gear-fill"></i> Admin
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border-danger" aria-labelledby="adminDropdown">
+        <li><a class="dropdown-item <?= $paginaAtual === 'admin_produtos.php' ? 'active' : '' ?>" href="admin_produtos.php"><i class="bi bi-box-seam"></i> Produtos</a></li>
+        <li><a class="dropdown-item <?= $paginaAtual === 'admin_cupons.php' ? 'active' : '' ?>" href="admin_cupons.php"><i class="bi bi-tag"></i> Cupons</a></li>
+        <li><a class="dropdown-item <?= $paginaAtual === 'admin_usuarios.php' ? 'active' : '' ?>" href="admin_usuarios.php"><i class="bi bi-people"></i> Usuários</a></li>
+    </ul>
+</li>
                 </ul>
 
                 <!-- Barra de Pesquisa (Componente Form + Input Group) -->

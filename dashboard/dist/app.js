@@ -1,21 +1,23 @@
 "use strict";
-
+// ====================================================================
+// PASSO 1: FUNÇÃO PARA BUSCAR OS DADOS DO SERVIDOR (API PHP)
+// ====================================================================
 async function carregarDashboard() {
     try {
-
+        // Faz a requisição HTTP GET para o arquivo api.php
         const resposta = await fetch('api.php');
-
+        // Se o servidor retornar um erro (ex: status 404 ou 500)
         if (!resposta.ok) {
             throw new Error(`Erro na requisição: Status ${resposta.status}`);
         }
-
+        // Converte a resposta recebida em um array de objetos do tipo Produto
         const produtos = await resposta.json();
-
+        // Se não houver produtos cadastrados, trata o cenário vazio explicitamente
         if (produtos.length === 0) {
             exibirEstadoVazio();
             return;
         }
-
+        // Atualiza a tela enviando os produtos para os Cards e para a Tabela
         atualizarCards(produtos);
         exibirTabela(produtos);
         exibirEstoqueCritico(produtos);
@@ -25,17 +27,22 @@ async function carregarDashboard() {
         exibirErro('Não foi possível carregar os dados da API. Verifique a conexão com o banco.');
     }
 }
-
+// ====================================================================
+// PASSO 2: FUNÇÃO PARA CALCULAR AS ESTATÍSTICAS E ATUALIZAR OS CARDS
+// ====================================================================
 function atualizarCards(produtos) {
     if (produtos.length === 0)
         return;
-
+    // --- 1. FATURAMENTO TOTAL (reduce) ---
+    // Soma preco * quantidade_vendida de todos os produtos
     const faturamentoTotal = produtos.reduce((acumulador, item) => {
         return acumulador + Number(item.preco) * Number(item.quantidade_vendida);
     }, 0);
-
+    // --- 2. PRODUTO MAIS VENDIDO (ranking por contagem) ---
     const produtoMaisVendido = encontrarProdutoMaisVendido(produtos);
+    // --- 3. PRODUTOS COM ESTOQUE CRÍTICO (filter) ---
     const estoqueCritico = filtrarEstoqueCritico(produtos);
+    // --- ATUALIZAÇÃO DO HTML (DOM), sempre checando se o elemento existe ---
     const elFaturamento = document.getElementById('card-faturamento');
     if (elFaturamento) {
         elFaturamento.innerText = formatarMoeda(faturamentoTotal);
@@ -51,8 +58,11 @@ function atualizarCards(produtos) {
         elEstoqueCritico.innerText = estoqueCritico.length.toString();
     }
 }
+// ====================================================================
+// FUNÇÃO: ENCONTRAR O PRODUTO MAIS VENDIDO (estrutura de contagem/ranking)
+// ====================================================================
 function encontrarProdutoMaisVendido(produtos) {
-
+    // Estrutura chave-valor para relacionar id -> quantidade vendida
     const contagem = {};
     produtos.forEach((item) => {
         contagem[item.produto_id] = Number(item.quantidade_vendida);
@@ -66,17 +76,21 @@ function encontrarProdutoMaisVendido(produtos) {
             idMaisVendido = id;
         }
     }
-
+    // Edge case: ninguém vendeu nada ainda
     if (idMaisVendido === null) {
         return null;
     }
     return produtos.find((p) => p.produto_id === idMaisVendido) ?? null;
 }
-
+// ====================================================================
+// FUNÇÃO: FILTRAR PRODUTOS COM ESTOQUE CRÍTICO (filter)
+// ====================================================================
 function filtrarEstoqueCritico(produtos, limite = 5) {
     return produtos.filter((item) => Number(item.estoque) < limite);
 }
-
+// ====================================================================
+// PASSO 3: FUNÇÃO PARA PREENCHER A TABELA DE PRODUTOS NO HTML (map)
+// ====================================================================
 function exibirTabela(produtos) {
     const tbody = document.getElementById('tabela-produtos-body');
     if (!tbody)
@@ -86,6 +100,7 @@ function exibirTabela(produtos) {
         tbody.innerHTML = '<tr><td colspan="6">Nenhum produto cadastrado.</td></tr>';
         return;
     }
+    // Uso de map para transformar os dados brutos em linhas formatadas antes de exibir
     const linhasFormatadas = produtos.map((item) => ({
         id: item.produto_id,
         nome: item.produto,
@@ -107,6 +122,9 @@ function exibirTabela(produtos) {
         tbody.appendChild(tr);
     });
 }
+// ====================================================================
+// FUNÇÃO: EXIBIR LISTA DE PRODUTOS COM ESTOQUE CRÍTICO
+// ====================================================================
 function exibirEstoqueCritico(produtos) {
     const container = document.getElementById('lista-estoque-critico');
     if (!container)
@@ -121,6 +139,9 @@ function exibirEstoqueCritico(produtos) {
         .join('');
     container.innerHTML = `<ul>${itens}</ul>`;
 }
+// ====================================================================
+// FUNÇÃO: TRATAMENTO DE CENÁRIO VAZIO (banco sem dados)
+// ====================================================================
 function exibirEstadoVazio() {
     const elFaturamento = document.getElementById('card-faturamento');
     if (elFaturamento)
@@ -138,18 +159,27 @@ function exibirEstadoVazio() {
     if (listaCritico)
         listaCritico.innerHTML = '<p>Nenhum dado registrado.</p>';
 }
+// ====================================================================
+// FUNÇÃO: EXIBIR MENSAGEM DE ERRO (falha de rede ou banco)
+// ====================================================================
 function exibirErro(mensagem) {
     const tbody = document.getElementById('tabela-produtos-body');
     if (tbody) {
         tbody.innerHTML = `<tr><td colspan="6">${mensagem}</td></tr>`;
     }
 }
+// ====================================================================
+// FUNÇÃO AUXILIAR: FORMATAR NÚMERO PARA MOEDA (R$)
+// ====================================================================
 function formatarMoeda(valor) {
     return valor.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL'
     });
 }
+// ====================================================================
+// EVENTO: EXECUTA O CÓDIGO ASSIM QUE O HTML TERMINAR DE CARREGAR
+// ====================================================================
 document.addEventListener('DOMContentLoaded', () => {
     carregarDashboard();
 });
