@@ -264,19 +264,28 @@ BEGIN
     DECLARE v_offset INT;
     SET v_offset = (p_pagina - 1) * p_por_pagina;
 
-    SELECT p.id_produto, p.nome, p.preco, p.estoque, c.nome AS categoria
+    SELECT
+        p.id_produto AS produto_id,
+        p.nome       AS produto,
+        p.preco,
+        p.estoque,
+        p.genero,
+        c.nome AS categoria,
+        COALESCE(SUM(ip.quantidade), 0) AS quantidade_vendida
     FROM produtos p
     LEFT JOIN produto_categoria pc ON pc.id_produto = p.id_produto
     LEFT JOIN categorias c        ON c.id_categoria = pc.id_categoria
+    LEFT JOIN itens_pedido ip     ON ip.id_produto = p.id_produto
     WHERE (p_categoria IS NULL OR c.nome = p_categoria)
       AND (p_preco_min IS NULL OR p.preco >= p_preco_min)
       AND (p_preco_max IS NULL OR p.preco <= p_preco_max)
-    ORDER BY p.nome
+    GROUP BY p.id_produto, p.nome, p.preco, p.estoque, p.genero, c.nome
+    ORDER BY c.nome ASC, p.nome ASC
     LIMIT p_por_pagina OFFSET v_offset;
 END$$
 DELIMITER ;
 -- Teste: CALL sp_listar_produtos('Camisas', 50, 150, 1, 5);
---        CALL sp_listar_produtos(NULL, NULL, NULL, 1, 10);
+--        CALL sp_listar_produtos(NULL, NULL, NULL, 1, 1000);
 
 
 -- 4.5) CTE: produto mais vendido dentro de cada categoria
@@ -297,3 +306,32 @@ WITH vendas_por_categoria AS (
     GROUP BY p.id_produto, p.nome, c.nome
 )
 SELECT * FROM vendas_por_categoria WHERE posicao_no_ranking = 1;
+
+
+
+SELECT * FROM vw_produtos_completo LIMIT 5;
+
+SELECT nome, preco, fn_preco_com_desconto(preco, 15) AS preco_com_desconto
+FROM produtos LIMIT 5;
+
+UPDATE produtos SET estoque = -10 WHERE id_produto = 1;
+SELECT estoque FROM produtos WHERE id_produto = 1;
+
+
+CALL sp_listar_produtos(NULL, NULL, NULL, 1, 1000);
+
+CALL sp_listar_produtos('Botas', 50, 250, 1, 10);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
